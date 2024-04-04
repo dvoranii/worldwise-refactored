@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import styles from "./City.module.css";
 import { useCities } from "../../Contexts/CitiesContext";
+import ButtonComponent from "../Button/Button";
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat("en", {
@@ -17,7 +18,6 @@ const formatDate = (date) =>
 function City() {
   const { id } = useParams();
   const { getCity, currentCity } = useCities();
-
   const { cityName, emoji, date, notes } = currentCity;
 
   useEffect(
@@ -57,6 +57,13 @@ function City() {
         >
           Check out {cityName} on Wikipedia &rarr;
         </a>
+      </div>
+      <div className={styles.btnWrapper}>
+        <ButtonComponent
+          buttonText="Back"
+          className={styles.backBtn}
+          isBackButton={true}
+        ></ButtonComponent>
       </div>
     </div>
   );

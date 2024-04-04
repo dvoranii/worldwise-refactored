@@ -1,14 +1,13 @@
 import styles from "./Form.module.css";
 import { useState } from "react";
 import ButtonComponent from "../Button/Button";
-import { useNavigate } from "react-router-dom";
 
 function Form() {
   const [cityName, setCityName] = useState("");
   // const [countryName, setCountryName] = useState("");
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState("");
-  const navigate = useNavigate();
+
   return (
     <form className={styles.form}>
       <div className={styles.row}>
@@ -39,7 +38,7 @@ function Form() {
         />
       </div>
 
-      <div className={styles.buttons}>
+      <div className={styles.buttonsWrapper}>
         <ButtonComponent
           buttonText="Add"
           className={styles.btn}
@@ -50,11 +49,8 @@ function Form() {
         ></ButtonComponent>
         <ButtonComponent
           buttonText="Back"
-          className={styles.btn}
-          onClick={(e) => {
-            e.preventDefault();
-            navigate(-1);
-          }}
+          className={styles.backBtn}
+          isBackButton={true}
         >
           Back
         </ButtonComponent>

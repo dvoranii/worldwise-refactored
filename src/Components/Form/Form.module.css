@@ -15,7 +15,7 @@
   position: relative;
 }
 
-.buttons {
+.buttonsWrapper {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -23,6 +23,12 @@
 
 .btn {
   padding: 4px 8px;
+}
+.backBtn {
+  background-color: transparent;
+  border: 1px solid rgb(181, 181, 181);
+  width: fit-content;
+  padding: 8px 20px;
 }
 
 .flag {

@@ -7,21 +7,34 @@ function login() {
   console.log("Performing login...");
 }
 
-function ButtonComponent({ path, buttonText, className, onClick }) {
+function ButtonComponent({
+  path,
+  buttonText,
+  className,
+  onClick,
+  isBackButton = false,
+}) {
   let navigate = useNavigate();
   let location = useLocation();
 
-  function defaultClickHandler(e) {
-    e.preventDefault();
-    if (path) {
-      if (location.pathname === "login") {
-        login();
-      } else {
-        // This approach allows us to maintain integrity of semantic html instead of using a <Link> element
-        navigate(path);
-      }
+  const handleBackNavigation = () => navigate(-1);
+  const handlePathNavigation = () => {
+    if (location.pathname === "login") {
+      login();
+    } else {
+      navigate(path);
     }
-  }
+  };
+
+  const defaultClickHandler = (e) => {
+    e.preventDefault();
+    if (isBackButton) {
+      handleBackNavigation();
+    } else if (path) {
+      handlePathNavigation();
+    }
+  };
+
   const handleClick = onClick ? onClick : defaultClickHandler;
 
   const buttonClass = `${styles.button} ${className || ""}`;
