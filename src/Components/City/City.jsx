@@ -1,11 +1,9 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-// import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import styles from "./City.module.css";
 import { useCities } from "../../Contexts/CitiesContext";
 import ButtonComponent from "../Button/Button";
+import Spinner from "../Spinner/Spinner";
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat("en", {
@@ -17,7 +15,7 @@ const formatDate = (date) =>
 
 function City() {
   const { id } = useParams();
-  const { getCity, currentCity } = useCities();
+  const { getCity, currentCity, isLoading } = useCities();
   const { cityName, emoji, date, notes } = currentCity;
 
   useEffect(
@@ -26,6 +24,8 @@ function City() {
     },
     [id]
   );
+
+  if (isLoading) return <Spinner />;
 
   return (
     <div className={styles.city}>
@@ -60,7 +60,7 @@ function City() {
       </div>
       <div className={styles.btnWrapper}>
         <ButtonComponent
-          buttonText="Back"
+          buttonText="← Back"
           className={styles.backBtn}
           isBackButton={true}
         ></ButtonComponent>

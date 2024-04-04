@@ -1,6 +1,5 @@
 import styles from "../Button/Button.module.css";
 import { useNavigate, useLocation } from "react-router-dom";
-
 // edge case
 function login() {
   // will import functionality from util module
@@ -17,25 +16,18 @@ function ButtonComponent({
   let navigate = useNavigate();
   let location = useLocation();
 
-  const handleBackNavigation = () => navigate(-1);
-  const handlePathNavigation = () => {
-    if (location.pathname === "login") {
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (onClick) {
+      onClick(e);
+    } else if (isBackButton) {
+      navigate(-1);
+    } else if (location.pathname === "/login") {
       login();
-    } else {
+    } else if (path) {
       navigate(path);
     }
   };
-
-  const defaultClickHandler = (e) => {
-    e.preventDefault();
-    if (isBackButton) {
-      handleBackNavigation();
-    } else if (path) {
-      handlePathNavigation();
-    }
-  };
-
-  const handleClick = onClick ? onClick : defaultClickHandler;
 
   const buttonClass = `${styles.button} ${className || ""}`;
 

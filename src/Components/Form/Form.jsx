@@ -48,12 +48,10 @@ function Form() {
           }}
         ></ButtonComponent>
         <ButtonComponent
-          buttonText="Back"
+          buttonText="← Back"
           className={styles.backBtn}
           isBackButton={true}
-        >
-          Back
-        </ButtonComponent>
+        ></ButtonComponent>
       </div>
     </form>
   );

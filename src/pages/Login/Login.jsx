@@ -30,7 +30,7 @@ export default function Login() {
         </div>
 
         <div>
-          <ButtonComponent path="/" buttonText="Login" className={styles.btn} />
+          <ButtonComponent buttonText="Login" className={styles.btn} />
         </div>
       </form>
     </main>
