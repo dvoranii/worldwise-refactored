@@ -4,7 +4,7 @@ import ButtonComponent from "../Button/Button";
 
 function Form() {
   const [cityName, setCityName] = useState("");
-  // const [countryName, setCountryName] = useState("");
+
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState("");
 
@@ -17,7 +17,6 @@ function Form() {
           onChange={(e) => setCityName(e.target.value)}
           value={cityName}
         />
-        {/* <span className={styles.flag}>{emoji}</span> */}
       </div>
 
       <div className={styles.row}>
@@ -42,6 +41,7 @@ function Form() {
         <ButtonComponent
           buttonText="Add"
           className={styles.btn}
+          // will probably move this to the button component so no need to override the onclick handler
           onClick={(e) => {
             e.preventDefault();
             alert("Add");
