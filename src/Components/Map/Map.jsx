@@ -1,22 +1,30 @@
 /* eslint-disable no-unused-vars */
-// import { useSearchParams } from "react-router-dom";
 import styles from "../Map/Map.module.css";
 import { useMapLocation } from "../../utils/useMapLocation";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { useCities } from "../../Contexts/CitiesContext";
 
 function Map() {
-  // const navigate = useNavigate();
-  const [mapPosition, setMapPosition] = useState([40, 0]);
+  const { cities, currentCity } = useCities();
+  let { lat: mapLat, lng: mapLng } = useMapLocation();
 
-  const { lat, lng, setSearchParams } = useMapLocation();
+  // Determine initial position either from currentCIty or URL params or default
+  const initialLat = currentCity?.position?.lat || mapLat || 40;
+  const initialLng = currentCity?.position?.lng || mapLng || 0;
+  const [mapPosition, setMapPosition] = useState([initialLat, initialLng]);
+
+  useEffect(() => {
+    if (currentCity?.position?.lat && currentCity?.position?.lng) {
+      setMapPosition([currentCity.position.lat, currentCity.position.lng]);
+    }
+  }, [currentCity]);
 
   return (
     <div className={styles.mapContainer}>
       <MapContainer
         center={mapPosition}
-        zoom={13}
+        zoom={8}
         scrollWheelZoom={true}
         className={styles.leafletMap}
       >
@@ -24,14 +32,27 @@ function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
         />
-        <Marker position={mapPosition}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
+        {cities.map((city) => (
+          <Marker
+            position={[city.position.lat, city.position.lng]}
+            key={city.id}
+          >
+            <Popup>
+              <span>{city.emoji}</span>
+              {city.cityName}
+            </Popup>
+          </Marker>
+        ))}
+        <ChangeCenter position={mapPosition} />
       </MapContainer>
     </div>
   );
+}
+
+function ChangeCenter({ position }) {
+  const map = useMap();
+  map.setView(position, map.getZoom());
+  return null;
 }
 
 export default Map;
