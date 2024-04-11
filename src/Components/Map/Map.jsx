@@ -1,18 +1,32 @@
 /* eslint-disable no-unused-vars */
 import styles from "../Map/Map.module.css";
-import { useMapLocation } from "../../utils/useMapLocation";
+import { useMapLocation } from "../../hooks/useMapLocation";
 import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import { useCities } from "../../Contexts/CitiesContext";
+import { useNavigate } from "react-router-dom";
+import { useGeolocation } from "../../hooks/useGeoLocation";
+import ButtonComponent from "../Button/Button";
 
 function Map() {
   const { cities, currentCity } = useCities();
-  let { lat: mapLat, lng: mapLng } = useMapLocation();
-
+  let { lat: urlLat, lng: urlLng } = useMapLocation();
   // Determine initial position either from currentCIty or URL params or default
-  const initialLat = currentCity?.position?.lat || mapLat || 40;
-  const initialLng = currentCity?.position?.lng || mapLng || 0;
+  const initialLat = currentCity?.position?.lat || urlLat || 40;
+  const initialLng = currentCity?.position?.lng || urlLng || 0;
   const [mapPosition, setMapPosition] = useState([initialLat, initialLng]);
+  const {
+    isLoading: isLoadingPosition,
+    position: geolocationPosition,
+    getPosition,
+  } = useGeolocation();
 
   useEffect(() => {
     if (currentCity?.position?.lat && currentCity?.position?.lng) {
@@ -20,13 +34,29 @@ function Map() {
     }
   }, [currentCity]);
 
+  useEffect(
+    function () {
+      if (geolocationPosition) {
+        setMapPosition([geolocationPosition.lat, geolocationPosition.lng]);
+      }
+    },
+    [geolocationPosition]
+  );
+
   return (
     <div className={styles.mapContainer}>
+      {!geolocationPosition && (
+        <ButtonComponent
+          buttonText={isLoadingPosition ? "Loading..." : "Use your location"}
+          className={styles.positionBtn}
+          onClick={getPosition}
+        ></ButtonComponent>
+      )}
       <MapContainer
         center={mapPosition}
         zoom={8}
         scrollWheelZoom={true}
-        className={styles.leafletMap}
+        className={styles.map}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -44,6 +74,7 @@ function Map() {
           </Marker>
         ))}
         <ChangeCenter position={mapPosition} />
+        <DetectClick />
       </MapContainer>
     </div>
   );
@@ -53,6 +84,15 @@ function ChangeCenter({ position }) {
   const map = useMap();
   map.setView(position, map.getZoom());
   return null;
+}
+
+function DetectClick() {
+  const navigate = useNavigate();
+  useMapEvents({
+    click: (e) => {
+      navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+    },
+  });
 }
 
 export default Map;
